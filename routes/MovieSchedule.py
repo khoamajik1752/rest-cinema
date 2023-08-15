@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 from models.MovieSchedule import MovieSchedule
-from config.db import conn
+from db import conn
 from helpers import serializeDict, serializeList
 from bson import ObjectId
 movieSchedule = APIRouter(

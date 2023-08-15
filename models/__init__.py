@@ -1,3 +1,3 @@
 from db import conn 
 
-InvoiceModel=conn.
+InvoiceModel=conn.local
