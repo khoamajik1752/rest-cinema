@@ -18,8 +18,10 @@ async def find_one_Movie(id):
 
 @movie.post('/')
 async def create_Movie(Movie: Movie):
-    conn.local.Movie.insert_one(dict(Movie))
-    return serializeDict(conn.local.Movie.find())
+    print('AAAAAAAAAAAAAAAAAAAAAAAAAAAAaaa')
+    print(conn)
+    conn.new.Movie.insert_one(dict(Movie))
+    return serializeDict(conn.new.Movie.find())
 
 @movie.put('/{id}')
 async def update_Movie(id,Movie: Movie):
