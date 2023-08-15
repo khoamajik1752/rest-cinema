@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from models.Service import Service
 from config.db import conn
-from schemas.Schemas import serializeDict, serializeList
+from helpers import serializeDict, serializeList
 from bson import ObjectId
 service = APIRouter(
     prefix="/service",

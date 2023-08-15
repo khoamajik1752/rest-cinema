@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from models.User import User
 from config.db import conn
-from schemas.Schemas import serializeDict, serializeList, userEntity, usersEntity
+from helpers import serializeDict, serializeList
 from bson import ObjectId
 user = APIRouter(
     prefix="/user",
@@ -14,12 +14,12 @@ async def find_all_Users():
 
 @user.get('/{id}')
 async def find_one_User(id):
-    return userEntity(conn.local.User.find_one({"_id":ObjectId(id)}))
+    return serializeDict(conn.local.User.find_one({"_id":ObjectId(id)}))
 
 @user.post('/')
 async def create_User(User: User):
     conn.local.User.insert_one(dict(User))
-    return userEntity(conn.local.User.find())
+    return serializeDict(conn.local.User.find())
 
 @user.put('/{id}')
 async def update_User(id,User: User):
