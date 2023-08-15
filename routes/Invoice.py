@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from models.Invoice import Invoice
 from config.db import conn
-from schemas.Schemas import serializeDict, serializeList
+# from schemas.Schemas import serializeDict, serializeList
 from bson import ObjectId
 invoice = APIRouter(
     prefix="/invoice",
@@ -27,7 +27,7 @@ async def create_Invoice(Invoice: Invoice):
         conn.local.Invoice.insert_one(dict(Invoice))
     return serializeDict(conn.local.Invoice.find())
 
-@invoice.put('/{id}')
+# @invoice.put('/{id}')
 async def update_Invoice(id,Invoice: Invoice):
     if conn.local.Staff.find_one({"_id":ObjectId(Invoice.StaffId)}):
         temp=serializeDict(conn.local.User.find_one({"_id":ObjectId(Invoice.CustomerId)}))

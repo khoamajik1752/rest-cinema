@@ -1,16 +1,25 @@
-# This is a sample Python script.
+from fastapi import FastAPI
+from routes.Invoice import invoice
+from routes.Movie import movie
+from routes.MovieSchedule import movieSchedule
+from routes.Service import service
+from routes.ServiceInvoice import serviceInvoice
+from routes.Staff import staff
+from routes.Ticket import ticket
+from routes.User import user
+import uvicorn
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+app = FastAPI()
+app.include_router(invoice)
+app.include_router(movie)
+app.include_router(movieSchedule)
+app.include_router(service)
+app.include_router(serviceInvoice)
+app.include_router(staff)
+app.include_router(ticket)
+app.include_router(user)
 
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
-
-
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+if __name__ == "__main__":
+    config = uvicorn.Config("main:app", port=5000, log_level="info")
+    server = uvicorn.Server(config)
+    server.run()
