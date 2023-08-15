@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 from models.Ticket import Ticket
-from config.db import conn
+from db import conn
 from helpers import serializeDict, serializeList
 from bson import ObjectId
 ticket = APIRouter(
