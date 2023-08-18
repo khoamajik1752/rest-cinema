@@ -18,15 +18,15 @@ async def find_one_Service(id):
 
 @service.post('/')
 async def create_Service(Service: Service):
-    conn.local.Service.insert_one(dict(Service))
-    return serializeDict(conn.local.Service.find())
+    conn.cinema.Service.insert_one(dict(Service))
+    return serializeDict(conn.cinema.Service.find())
 
 @service.put('/{id}')
 async def update_Service(id,Service: Service):
-    conn.local.Service.find_one_and_update({"_id":ObjectId(id)},{
+    conn.cinema.Service.find_one_and_update({"_id":ObjectId(id)},{
         "$set":dict(Service)
     })
-    return serializeDict(conn.local.Service.find_one({"_id":ObjectId(id)}))
+    return serializeDict(conn.cinema.Service.find_one({"_id":ObjectId(id)}))
 
 @service.delete('/{id}')
 async def delete_Service(id):

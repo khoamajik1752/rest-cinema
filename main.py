@@ -20,6 +20,6 @@ app.include_router(ticket)
 app.include_router(user)
 
 if __name__ == "__main__":
-    config = uvicorn.Config("main:app", port=5000, log_level="info")
+    config = uvicorn.Config("main:app", port=5000, log_level="info", reload=True)
     server = uvicorn.Server(config)
     server.run()

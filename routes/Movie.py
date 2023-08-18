@@ -1,8 +1,8 @@
 from fastapi import APIRouter
-from models.Movie import Movie
+from schemas import movie_create_request,movie_update_request,movie_get_request,movie_delete_request
 from db import conn
 from helpers import serializeDict, serializeList
-from bson import ObjectId
+from services.movie.movie import MovieServices
 movie = APIRouter(
     prefix="/movie",
     tags=['movie']
@@ -10,26 +10,20 @@ movie = APIRouter(
 
 @movie.get('/')
 async def find_all_Movies():
-    return serializeList(conn.local.Movie.find())
+    return serializeList(MovieServices.get_all_movie())
 
-@movie.get('/{id}')
-async def find_one_Movie(id):
-    return serializeDict(conn.local.Movie.find_one({"_id":ObjectId(id)}))
+@movie.get('/{name}')
+async def find_Movie(name):
+    return serializeDict(MovieServices.get_movie(name))
 
 @movie.post('/')
-async def create_Movie(Movie: Movie):
-    print('AAAAAAAAAAAAAAAAAAAAAAAAAAAAaaa')
-    print(conn)
-    conn.new.Movie.insert_one(dict(Movie))
-    return serializeDict(conn.new.Movie.find())
+async def create_Movie(Movie: movie_create_request):
+    return serializeDict(MovieServices.create_movie(Movie))
 
-@movie.put('/{id}')
-async def update_Movie(id,Movie: Movie):
-    conn.local.Movie.find_one_and_update({"_id":ObjectId(id)},{
-        "$set":dict(Movie)
-    })
-    return serializeDict(conn.local.Movie.find_one({"_id":ObjectId(id)}))
+@movie.put('/')
+async def update_Movie(Movie: movie_update_request):
+    return serializeDict(MovieServices.update_movie(Movie))
 
-@movie.delete('/{id}')
-async def delete_Movie(id):
-    return serializeDict(conn.local.Movie.find_one_and_delete({"_id":ObjectId(id)}))
+@movie.delete('/{Movie.id}')
+async def delete_Movie(Movie: movie_delete_request):
+    return serializeDict(MovieServices.delete_movie(Movie))

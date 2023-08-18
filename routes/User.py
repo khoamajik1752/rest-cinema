@@ -1,8 +1,8 @@
 from fastapi import APIRouter
-from models.User import User
+from schemas import user_create_request,user_delete_request,user_update_information_request,user_get_information_request,user_update_password_request
 from db import conn
 from helpers import serializeDict, serializeList
-from bson import ObjectId
+from services.user.user import UserServices
 user = APIRouter(
     prefix="/user",
     tags=['user']
