@@ -9,6 +9,5 @@ class user_create_request(BaseModel):
     Tel:str
 
 class user_create_response(user_without_password_schema):
-    id:str
     pass
     

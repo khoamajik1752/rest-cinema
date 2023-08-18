@@ -6,51 +6,56 @@ from bson import ObjectId
 from pymongo import ReturnDocument
 
 class UserServices:
+    
     @classmethod
-    def remove_password(cls, data) -> user_without_password_schema:
-        pass
+    def __remove_password(cls, data) -> user_without_password_schema:
+        return {
+            "id":str(data['_id']),
+            "Username":data['Username'],
+            "Fullname":data['Fullname'],
+            "Email":data['Email'],
+            "Tel":data['Tel'],
+            "Created_time":data['Created_time'],
+            "Updated_time":data['Updated_time'],
+            "Last_login":data['Last_login']
+        }
         
+    @classmethod
+    def __add_id(cls,data) -> user_full_schema:
+        return{
+            "id":str(data['_id']),
+            "Username":data['Username'],
+            "Password":data['Password'],
+            "Fullname":data['Fullname'],
+            "Email":data['Email'],
+            "Tel":data['Tel'],
+            "Created_time":data['Created_time'],
+            "Updated_time":data['Updated_time'],
+            "Last_login":data['Last_login']
+        }    
         
     
     @classmethod
     def get_all_user(cls) -> list[user_get_information_response]:
 
-        _user=UserModel.find()
+        _users=UserModel.find()
         
-        if _user is None:
+        if _users is None:
             raise Exception('Khong thay user')
+        _reslist= [cls.__remove_password(data) for data in _users]
         
-        _res=user_get_information_response({
-            "id":_user._id.str,
-            "Username":_user.Username,
-            "Fullname":_user.Fullname,
-            "Email":_user.Email,
-            "Tel":_user.Tel,
-            "Created_time":_user.Created_time,
-            "Updated_time":_user.Updated_time,
-            "Last_login":_user.Last_login
-            })
-        
-        return _res
+        return _reslist
+    
     @classmethod
-    def get_user(cls,form_data:user_get_information_request) -> user_get_information_response:
-        id=form_data.id
+    def get_user(cls,form_data:str) -> user_get_information_response:
+        id=form_data
 
         _user=UserModel.find_one({"_id":ObjectId(id)})
         
         if _user is None:
             raise Exception('Khong thay user')
         
-        _res=user_get_information_response({
-            "id":_user._id.str,
-            "Username":_user.Username,
-            "Fullname":_user.Fullname,
-            "Email":_user.Email,
-            "Tel":_user.Tel,
-            "Created_time":_user.Created_time,
-            "Updated_time":_user.Updated_time,
-            "Last_login":_user.Last_login
-            })
+        _res=cls.__remove_password(_user)
         
         return _res
     
@@ -63,17 +68,7 @@ class UserServices:
         if _user is None:
             raise Exception('Khong thay user')
         
-        _res=user_get_with_password_response({
-            "id":_user._id.str,
-            "Username":_user.Username,
-            "Password":_user.Password,
-            "Fullname":_user.Fullname,
-            "Email":_user.Email,
-            "Tel":_user.Tel,
-            "Created_time":_user.Created_time,
-            "Updated_time":_user.Updated_time,
-            "Last_login":_user.Last_login
-            })
+        _res=cls.__add_id(_user)
         
         return _res
      
@@ -85,31 +80,23 @@ class UserServices:
         email=form_data.Email
         tel=form_data.Tel
 
-        _user=UserModel.insert_one({
+        userid=UserModel.insert_one({
             "Username":username,
             "Password":password,
             "Fullname":fullname,
             "Email":email,
             "Tel":tel,
-            "Created_time":datetime.now,
-            "Updated_time":datetime.now,
-            "Last_login":None
+            "Created_time":datetime.now(),
+            "Updated_time":datetime.now(),
+            "Last_login":datetime.now()
             })
         
         
-        if _user is None:
+        if userid is None:
             raise Exception('Khong tao duoc user')
-            
-        _res=user_create_response({
-            "id":_user._id.str,
-            "Username":_user.Username,
-            "Fullname":_user.Fullname,
-            "Email":_user.Email,
-            "Tel":_user.Tel,
-            "Created_time":_user.Created_time,
-            "Updated_time":_user.Updated_time,
-            "Last_login":_user.Last_login
-            })
+        
+        _res=cls.__remove_password(UserModel.find_one({"_id":ObjectId(userid.inserted_id)}))
+        
         return _res
     
     @classmethod
@@ -123,24 +110,15 @@ class UserServices:
             "Fullname":fullname,
             "Email":email,
             "Tel":tel,
-            "Updated_time":datetime.now
+            "Updated_time":datetime.now()
             }
-        },ReturnDocument.BEFORE)
+        })
         
         
         if _user is None:
             raise Exception('Khong thay user')
-            
-        _res=user_update_information_response({
-            "id":_user._id.str,
-            "Username":_user.Username,
-            "Fullname":_user.Fullname,
-            "Email":_user.Email,
-            "Tel":_user.Tel,
-            "Created_time":_user.Created_time,
-            "Updated_time":_user.Updated_time,
-            "Last_login":_user.Last_login
-            })
+          
+        _res=cls.__remove_password(_user)  
         
         return _res
     
@@ -156,34 +134,28 @@ class UserServices:
         _user=UserModel.find_one_and_update({"_id":ObjectId(id),"Password":oldPassword},{
             "$set":{
             "Password":newPassword,
-            "Updated_time":datetime.now
+            "Updated_time":datetime.now()
             }
-        },ReturnDocument.BEFORE)
+        })
         
         
         if _user is None:
             raise Exception('password cu khong dung')
-            
-        _res=user_update_password_response({
-            "id":_user._id.str,
-            "Username":_user.Username,
-            "Fullname":_user.Fullname,
-            "Email":_user.Email,
-            "Tel":_user.Tel,
-            "Created_time":_user.Created_time,
-            "Updated_time":_user.Updated_time,
-            "Last_login":_user.Last_login
-            })
+         
+           
+        _res=cls.__remove_password(_user)
         
         return _res
     
     @classmethod
     def delete_user(cls,form_data:user_delete_request) -> user_delete_response:
         id=form_data.id
-        _user=UserModel.find_one_and_delete({"_id":ObjectId(id)},ReturnDocument.BEFORE)
+        _user=UserModel.find_one_and_delete({"_id":ObjectId(id)})
         
         
         if _user is None:
             raise Exception('Khong thay user')
         
-        return _user
+        _res=cls.__remove_password(_user)
+        
+        return _res

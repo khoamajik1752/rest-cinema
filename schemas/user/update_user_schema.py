@@ -9,7 +9,6 @@ class user_update_information_request(BaseModel):
     Tel:str
 
 class user_update_information_response(user_without_password_schema):   
-    id:str
     pass 
     
 class user_update_password_request(BaseModel):
@@ -18,7 +17,6 @@ class user_update_password_request(BaseModel):
     newPassword:str
     
 class user_update_password_response(user_without_password_schema):
-    id:str
     pass
 
     

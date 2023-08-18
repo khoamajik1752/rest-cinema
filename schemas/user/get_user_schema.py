@@ -6,9 +6,8 @@ class user_get_information_request(BaseModel):
     id:str
     
 class user_get_information_response(user_without_password_schema):
-    id:str
+    pass
     
 class user_get_with_password_response(user_full_schema):
-    id:str
     pass
     
