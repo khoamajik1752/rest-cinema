@@ -1,8 +1,9 @@
 from pydantic import BaseModel
 from datetime import datetime
+from bson import ObjectId
 
 class user_full_schema(BaseModel):
-    id:str
+    _id:str
     Username: str
     Password: str
     Fullname:str
@@ -13,7 +14,7 @@ class user_full_schema(BaseModel):
     Last_login:datetime
     
 class user_without_password_schema(BaseModel):
-    id:str
+    _id:ObjectId
     Username: str
     Fullname:str
     Email: str

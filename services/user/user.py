@@ -3,61 +3,36 @@ from models import UserModel
 from schemas import user_delete_request,user_delete_response,user_create_request,user_create_response,user_get_information_request,user_get_information_response,user_get_with_password_response,user_update_information_request,user_update_information_response,user_update_password_request,user_update_password_response,user_full_schema,user_without_password_schema
 from datetime import datetime
 from bson import ObjectId
-from pymongo import ReturnDocument
+from helpers.CustomModel import CustomModel
 
 class UserServices:
     
-    @classmethod
-    def __remove_password(cls, data) -> user_without_password_schema:
-        return {
-            "id":str(data['_id']),
-            "Username":data['Username'],
-            "Fullname":data['Fullname'],
-            "Email":data['Email'],
-            "Tel":data['Tel'],
-            "Created_time":data['Created_time'],
-            "Updated_time":data['Updated_time'],
-            "Last_login":data['Last_login']
-        }
-        
-    @classmethod
-    def __add_id(cls,data) -> user_full_schema:
-        return{
-            "id":str(data['_id']),
-            "Username":data['Username'],
-            "Password":data['Password'],
-            "Fullname":data['Fullname'],
-            "Email":data['Email'],
-            "Tel":data['Tel'],
-            "Created_time":data['Created_time'],
-            "Updated_time":data['Updated_time'],
-            "Last_login":data['Last_login']
-        }    
-        
+    model=CustomModel(UserModel)
     
     @classmethod
-    def get_all_user(cls) -> list[user_get_information_response]:
-
-        _users=UserModel.find()
+    def get_all_user(cls)->list[user_get_information_response]:
         
-        if _users is None:
-            raise Exception('Khong thay user')
-        _reslist= [cls.__remove_password(data) for data in _users]
+        _res=UserModel.aggregate([ { '$match': {} },{'$set':{'_id':{'$toString': "$_id"}}} ])
         
-        return _reslist
+        pipeline=[ { '$match': {} },{'$set':{'_id':{'$toString': "$_id"}}} ]
+        _ress=cls.model.aggregate(pipeline)
+        
+        return _ress
+        #return list(_res)
     
     @classmethod
-    def get_user(cls,form_data:str) -> user_get_information_response:
+    def get_user(cls,form_data:str) -> user_get_information_request:
         id=form_data
-
-        _user=UserModel.find_one({"_id":ObjectId(id)})
         
-        if _user is None:
+        _res=UserModel.aggregate([ { '$match': {'_id':ObjectId(id)} },{'$set':{'_id':{'$toString': "$_id"}}} ])
+
+        
+        if _res is None:
             raise Exception('Khong thay user')
         
-        _res=cls.__remove_password(_user)
+        temp=list(_res).pop()
         
-        return _res
+        return temp
     
     @classmethod
     def get_user_with_password(cls,form_data:user_get_information_request) -> user_get_with_password_response:
