@@ -10,11 +10,14 @@ user = APIRouter(
 
 @user.get('/')
 async def find_all_Users()->list[user_get_information_response]:
-    return UserServices.get_all_user()
+    a=UserServices.get_all_user()
+    if a == []:
+        raise HTTPException(status_code=404, detail="Item not found")
+    return a
 
 @user.get('/{id}')
 async def find_one_User(id)->user_get_information_response:
-    return UserServices.get_user(id) 
+    return UserServices.get_user(id)
 
 @user.get('/psw/{id}')
 async def find_one_User_with_password(id)->user_get_with_password_response:
