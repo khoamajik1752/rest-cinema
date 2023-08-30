@@ -1,63 +1,52 @@
 
 from models import MovieModel
-from schemas import  movie_create_request, movie_create_response, movie_get_request, movie_get_response, movie_update_request, movie_update_response ,movie_delete_request, movie_delete_response
+from schemas.movie import * 
 
 from bson import ObjectId
-from pymongo import ReturnDocument
+from helpers.CustomModel import CustomModel
 
 class MovieServices:
-    @classmethod
-    def get_all_movie(cls) -> list[movie_get_response]:
-        _movie=MovieModel.find()
-        if _movie is None:
-            raise Exception('Khong thay phim')
-        
-        return _movie
+    
+    model=CustomModel(MovieModel)
     
     @classmethod
-    def get_movie(cls,form_data:str) -> movie_get_response:
-        name=form_data
-
-        _movie=MovieModel.find({"Name":name})
-        if _movie is None:
-            raise Exception('Khong thay phim')    
+    def get_all_movie(cls) -> list[movie_get_response]:
         
-        return _movie   
+        _res=cls.model.find()
+        
+        return _res
+    
+    @classmethod
+    def get_movie(cls,form_data:movie_get_request) -> list[movie_get_response]:
+        data=movie_get_schema_mapping(**dict(form_data))
+        print(dict(data))
+        query=dict(data)
+        _res=cls.model.find(query)
+  
+        return _res   
      
     @classmethod
     def create_movie(cls,form_data:movie_create_request) -> movie_create_response:
-        name=form_data.Name
-        author=form_data.Author
-        description=form_data.Description
-
-        movieid=MovieModel.insert_one({"Name":name,"Author":author,"Description":description})
-        if movieid is None:
-            raise Exception('Khong tao duoc phim')
         
-        _res=MovieModel.find_one({"_id":ObjectId(movieid.inserted_id)})
+        document=form_data
+        _res=cls.model.insert_one(dict(document))
         
         return _res
     
     @classmethod
     def update_movie(cls,form_data:movie_update_request) -> movie_update_response:
-        id=form_data.id
-        name=form_data.Name
-        author=form_data.Author
-        description=form_data.Description
-        _res=MovieModel.find_one_and_update({"_id":ObjectId(id)},{
-            "$set":{
-                "Name":name,
-                "Author": author,
-                "Description":description
-            }
-        })
+        
+        filter={"_id":ObjectId(form_data.id)}
+        update={'$set':dict(form_data)}
+        _res=cls.model.find_one_and_update(filter,update)
         
         return _res
     
     @classmethod
     def delete_movie(cls,form_data:movie_delete_request) -> movie_delete_response:
-        id=form_data.id
-        _res=MovieModel.find_one_and_delete({"_id":ObjectId(id)})
+        
+        filter={'_id':ObjectId(form_data.id)}
+        _res=cls.model.find_one_and_delete(filter)
         
         
         return _res

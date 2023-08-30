@@ -1,5 +1,5 @@
-from fastapi import APIRouter
-from schemas import movie_create_request,movie_update_request,movie_get_request,movie_delete_request
+from fastapi import APIRouter,Depends
+from schemas.movie import *
 from db import conn
 from helpers import serializeDict, serializeList
 from services.movie.movie import MovieServices
@@ -9,21 +9,21 @@ movie = APIRouter(
 )
 
 @movie.get('/')
-async def find_all_Movies():
-    return serializeList(MovieServices.get_all_movie())
+async def find_all_Movies()->list[movie_get_response]:
+    return MovieServices.get_all_movie()
 
-@movie.get('/{name}')
-async def find_Movie(name):
-    return serializeDict(MovieServices.get_movie(name))
+@movie.get('/{Movie.Name}')
+async def find_Movie(Movie: movie_get_request=Depends())->list[movie_get_response]:
+    return MovieServices.get_movie(Movie)
 
 @movie.post('/')
-async def create_Movie(Movie: movie_create_request):
-    return serializeDict(MovieServices.create_movie(Movie))
+async def create_Movie(Movie: movie_create_request)->movie_create_response:
+    return MovieServices.create_movie(Movie)
 
 @movie.put('/')
-async def update_Movie(Movie: movie_update_request):
-    return serializeDict(MovieServices.update_movie(Movie))
+async def update_Movie(Movie: movie_update_request)->movie_update_response:
+    return MovieServices.update_movie(Movie)
 
 @movie.delete('/{Movie.id}')
-async def delete_Movie(Movie: movie_delete_request):
-    return serializeDict(MovieServices.delete_movie(Movie))
+async def delete_Movie(Movie: movie_delete_request)->movie_delete_response:
+    return MovieServices.delete_movie(Movie)

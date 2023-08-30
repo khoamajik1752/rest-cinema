@@ -7,6 +7,7 @@ class movie_update_request(BaseModel):
     Author:str
     Description:str
 
+
 class movie_update_response(movie_full_schema):
     pass
     

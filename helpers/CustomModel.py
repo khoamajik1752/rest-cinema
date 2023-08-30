@@ -18,17 +18,18 @@ class CustomModel():
          
         return _res
     
-    def find(self,query,projection={},options={}):
-        _res=list(self.model.find(query,projection,options))
-                
+    def find(self,query={},projection={}):
+        
+        
+        _res=self.model.find(query,projection)
         if _res == []:
             raise HTTPException(status_code=404, detail="error not found")
         
         
         return _res
     
-    def find_one(self,query,projection={},options={}):
-        _res=self.model.find_one(query,projection,options)
+    def find_one(self,query,projection={}):
+        _res=self.model.find_one(query,projection)
         
         if _res is None:
             raise HTTPException(status_code=404, detail="error not found")

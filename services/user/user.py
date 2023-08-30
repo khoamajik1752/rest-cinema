@@ -56,14 +56,13 @@ class UserServices:
     def update_user_password(cls,form_data:user_update_password_request) -> user_update_password_response:
         data=user_update_password_schema_mapping(**dict(form_data))
         print(data)
+        
         if data.Password:
             pass#requirement for new password
         
         filter={"_id":ObjectId(form_data.id),"Password":form_data.oldPassword}
         update={"$set":dict(data)}
         _res=cls.model.find_one_and_update(filter,update)
-        
-         
         
         return _res
     

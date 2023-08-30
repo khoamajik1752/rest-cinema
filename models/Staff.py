@@ -7,7 +7,7 @@ class Staff(BaseModel):
     Password: str
     Email: str
     Tel:str
-    Role:str
+    Role:list[str]
     Created_time:datetime
     Updated_time:datetime
     Last_login:datetime
