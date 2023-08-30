@@ -5,7 +5,8 @@ from bson import ObjectId
 
 class CustomModel():
 
-    model = collection
+    model:collection
+    #model = collection
     
     def __init__(self,model:collection):
         self.model = model
