@@ -1,6 +1,7 @@
 from pymongo import collection
 from fastapi import HTTPException
 from bson import ObjectId
+from pydantic import BaseModel
 
 
 class CustomModel():
@@ -21,7 +22,8 @@ class CustomModel():
     
     def find(self,query={},projection={}):
         
-        
+        query=dict(**query,exclude_none=True)
+        print(query)
         _res=self.model.find(query,projection)
         if _res == []:
             raise HTTPException(status_code=404, detail="error not found")

@@ -12,7 +12,7 @@ movie = APIRouter(
 async def find_all_Movies()->list[movie_get_response]:
     return MovieServices.get_all_movie()
 
-@movie.get('/{Movie.Name}')
+@movie.get('/mm')
 async def find_Movie(Movie: movie_get_request=Depends())->list[movie_get_response]:
     return MovieServices.get_movie(Movie)
 

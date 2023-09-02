@@ -18,10 +18,12 @@ class MovieServices:
     
     @classmethod
     def get_movie(cls,form_data:movie_get_request) -> list[movie_get_response]:
-        data=movie_get_schema_mapping(**dict(form_data))
-        print(dict(data))
-        query=dict(data)
-        _res=cls.model.find(query)
+        # print(type(form_data))
+        # data=dict(form_data)
+        # print(data)
+        query=form_data.dict()
+        print({**query})
+        _res=cls.model.find({**query})
   
         return _res   
      
