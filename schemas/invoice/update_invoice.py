@@ -3,7 +3,7 @@ from typing import Optional
 
 
 class update_invoice_request(BaseModel):
-    id=str
+    id:str
     food_service: Optional[list[str]]
     status:Optional[str]
 

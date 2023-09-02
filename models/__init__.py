@@ -1,6 +1,6 @@
 from db import conn 
-
-InvoiceModel=conn.cinema.Invoice
+from helpers import CustomModel
+InvoiceModel= CustomModel(conn.cinema.Invoice)
 MovieModel=conn.cinema.Movie
 MovieScheduleModel=conn.cinema.MovieSchedule
 ServiceModel=conn.cinema.Service
