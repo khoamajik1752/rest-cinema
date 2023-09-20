@@ -1,21 +1,23 @@
 
-from dependencies import pwd_context
+
 from model import UserModel
 from datetime import datetime, timedelta
 from config import Config
 from jose import JWTError, jwt
 
+
+
 class AuthService:
     @classmethod
     def sign_up(cls,form_data:dict):
     
-        form_data["password"]=pwd_context.hash(form_data["password"])
+        form_data["password"]=Config.pwd_context.hash(form_data["password"])
         UserModel.insert_one({
             **form_data
         })
     
     def verify_password(plain_password, hashed_password):
-        return pwd_context.verify(plain_password, hashed_password)    
+        return Config.pwd_context.verify(plain_password, hashed_password)    
     
     def create_access_token(data: dict, expires_delta: timedelta | None = None):
         to_encode = data.copy()

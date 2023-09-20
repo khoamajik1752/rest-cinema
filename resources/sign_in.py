@@ -1,5 +1,5 @@
 from fastapi import APIRouter,Depends
-from dependencies import get_current_active_user
+from helpers import security
 from services import AuthService
 from schemas import UserLogin
 from typing import Annotated
@@ -17,6 +17,6 @@ async def sign_in(user_login:UserLogin):
     return token
 
 @router.post("/test_auth")
-async def test_auth( current_user: Annotated[UserLogin, Depends(get_current_active_user)]):
+async def test_auth( current_user: Annotated[UserLogin, Depends(security.get_current_active_user)]):
 
     return {}
