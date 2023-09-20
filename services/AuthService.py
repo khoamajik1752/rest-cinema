@@ -38,14 +38,16 @@ class AuthService:
             "username":username
             }
         )
-        print(user)
+        # print(user)
         hashed_password=user["password"]
-        print(hashed_password)
+        # print(hashed_password)
         if not user:
             return False
         
         if not cls.verify_password(password, hashed_password):
             return False
+        user.pop('_id',None)
         
-        token= cls.create_access_token(data={"name":"khoa"})
+        token= cls.create_access_token(data=user)
+  
         return token
