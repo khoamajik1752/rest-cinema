@@ -17,6 +17,6 @@ async def sign_in(user_login:UserLogin):
     return token
 
 @router.post("/test_auth")
-async def test_auth( current_user: Annotated[UserLogin, Depends(security.get_current_active_user)]):
+async def test_auth( current_user: Annotated[UserLogin, Depends(security.security)]):
 
     return {}

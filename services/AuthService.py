@@ -10,11 +10,13 @@ from jose import JWTError, jwt
 class AuthService:
     @classmethod
     def sign_up(cls,form_data:dict):
-    
+        form_data["username"]=form_data["username"].lower()
         form_data["password"]=Config.pwd_context.hash(form_data["password"])
+        form_data["roles"]=['user']
         UserModel.insert_one({
             **form_data
         })
+        
     
     def verify_password(plain_password, hashed_password):
         return Config.pwd_context.verify(plain_password, hashed_password)    
@@ -31,23 +33,20 @@ class AuthService:
     
     @classmethod
     def sign_in(cls,form_data:dict):
-        username=form_data["username"]
+        username=form_data["username"].lower()
         password=form_data["password"]
 
         user = UserModel.find_one({
             "username":username
             }
         )
-        # print(user)
         hashed_password=user["password"]
-        # print(hashed_password)
         if not user:
             return False
         
         if not cls.verify_password(password, hashed_password):
             return False
         user.pop('_id',None)
-        
         token= cls.create_access_token(data=user)
   
         return token
