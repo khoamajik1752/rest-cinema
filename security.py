@@ -1,4 +1,4 @@
-from fastapi import Depends, FastAPI, HTTPException, status
+from fastapi import Depends, Request, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jose import JWTError, jwt
 from passlib.context import CryptContext
@@ -42,3 +42,26 @@ async def get_current_active_user(
     if is_disabled:
         raise HTTPException(status_code=400, detail="Inactive user")
     return current_user
+
+async def security(
+    request:Request,
+    current_active_user:Annotated[UserLogin, Depends(get_current_active_user)]
+):
+    _Origin=request.headers["Origin"]
+    _url=str(request.url)
+    _permission=_url.replace(_Origin,"").split("/")[0]
+    _roles=current_active_user.get("roles")
+
+    authorize_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not authorize user",
+        headers={"WWW-Authorize": "Bearer"},
+    )
+
+    if _roles is None or len(_roles)==0:
+        raise authorize_exception
+    if _permission not in _roles:
+        raise authorize_exception 
+    else:
+        return current_active_user
+    
