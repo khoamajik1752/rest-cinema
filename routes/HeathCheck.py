@@ -1,11 +1,11 @@
 from fastapi import APIRouter
 
 
-health_check=APIRouter(
+router=APIRouter(
     prefix='/health_check',
     tags=['health_check']
 )
 
-@health_check.get('/')
+@router.get('/')
 async def healthCheck():
     return 'status: OK'
