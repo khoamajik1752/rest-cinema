@@ -4,6 +4,7 @@ from model import UserModel
 from datetime import datetime, timedelta
 from config import Config
 from jose import JWTError, jwt
+from fastapi import FastAPI, HTTPException
 
 
 
@@ -13,6 +14,13 @@ class AuthService:
         form_data["username"]=form_data["username"].lower()
         form_data["password"]=Config.pwd_context.hash(form_data["password"])
         form_data["roles"]=['user']
+  
+        _is_user_existed=UserModel.find_one({
+            "username":form_data["username"]
+        })
+
+        if _is_user_existed:
+            raise HTTPException(status_code=409, detail="Account is already existed!")
         UserModel.insert_one({
             **form_data
         })

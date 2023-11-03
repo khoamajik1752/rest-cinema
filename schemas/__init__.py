@@ -1,2 +1,2 @@
-from .LoginSchema import UserLogin
+from .LoginSchema import *
 from .SignUpSchema import *

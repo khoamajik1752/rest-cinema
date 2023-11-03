@@ -1,7 +1,9 @@
 from pydantic import BaseModel
 
 
-
+class SignUpRes(BaseModel):
+    status:str
+    message:str
 
 class SignUpUser(BaseModel):
     username: str

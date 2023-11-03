@@ -1,5 +1,5 @@
 from fastapi import APIRouter,Depends
-from schemas import SignUpUser
+from schemas import SignUpUser,SignUpRes
 from model import UserModel
 from services import AuthService
 router=APIRouter(
@@ -9,9 +9,9 @@ router=APIRouter(
     responses={404: {"description": "Not found"}},
 )
 
-@router.post("/sign_up")
+@router.post("/sign_up", response_model=SignUpRes)
 async def sign_up(form_data:SignUpUser):
 
     AuthService.sign_up(form_data=form_data.__dict__)
     
-    return True
+    return SignUpRes(status="OK",message="Sign up successfully !")
