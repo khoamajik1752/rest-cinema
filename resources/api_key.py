@@ -1,16 +1,17 @@
 import datetime
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from helpers import security
 from schemas import ApiKeySchema
 from model import ApiKeyModel
-from bson import objectid,ObjectId
+from bson import ObjectId
 from pymongo import collection
 
 import secrets
 
 router=APIRouter(
     prefix="/api_key",
-    # dependencies=[security.security],
+    tags=["API key"],
+    dependencies=[Depends(security.security)],
 )
 
 @router.get("/get")
